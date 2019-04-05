@@ -63,7 +63,7 @@ class EventManager:
 
         payload = {
             'msgVpnName': vpnName,
-            'queueName': q,
+            'queueName': aq,
             'accessType': 'non-exclusive',
             'egressEnabled': True,
             'ingressEnabled': True,
@@ -97,7 +97,7 @@ class EventManager:
 
         payload = {
             'msgVpnName': vpnName,
-            'queueName': q,
+            'queueName': aq,
             'subscriptionTopic': topic,
         }
         data = self.doIt("post", 
