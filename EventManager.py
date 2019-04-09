@@ -34,10 +34,34 @@ class EventManager:
 
         payload = {
             'msgVpnName': vpnName,
-            'enabled': True
+            'enabled': True,
+            'authenticationBasicType': 'internal',
+            'maxMsgSpoolUsage': 1000
         }
         data = self.doIt("post", "msgVpns", payload)
+
+        # Now enable the clientuser
+        payload = {
+            'clientUsername': 'default',
+            'password': 'default',
+            'enabled': True
+        }
+        data = self.doIt("patch", "msgVpns/" + vpnName + "/clientUsernames/default",
+             payload)
+
+        # Now enable the guaranteed messaging in client profile
+        payload = {
+            'clientProfileName': 'default',
+            'allowGuaranteedMsgReceiveEnabled': True,
+            'allowGuaranteedMsgSendEnabled': True
+        }
+        data = self.doIt("patch", "msgVpns/" + vpnName + "/clientProfiles/default",
+             payload)
+
+
         print("VPN Created:",avpnName)
+
+
 
     def deleteVpn(self, avpnName):
         vpnName = encodeUrl(avpnName)
@@ -135,15 +159,15 @@ class EventManager:
                 # fullurl = 'https://httpbin.org/post'
                 response = self.session.post(fullurl, json = payload)
                 # print(response.text)
-            elif method == 'put':
-                # print('put')
-                pass
+            elif method == 'patch':
+                response = self.session.patch(fullurl, json = payload)
+                # print(response.text)
             elif method == 'delete':
                 # print('delete')
                 response = self.session.delete(fullurl)
 
             else:
-                print('not implemented')
+                print('method not implemented')
 
             # If the response was successful, no Exception will be raised
             response.raise_for_status()
